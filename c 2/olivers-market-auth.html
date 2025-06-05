@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Oliver's Market | Login & Register</title>
+  <a href="dashboard.html"></a>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    main {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #4CAF50;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    input {
+      padding: 0.7rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      padding: 0.8rem;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .switch {
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .switch a {
+      color: #4CAF50;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    .error {
+      color: red;
+      font-size: 0.9rem;
+    }
+
+    .success {
+      color: green;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+<main>
+  <h1 id="formTitle">Login to Oliver's Market</h1>
+  <form id="authForm">
+    <div id="nameGroup" style="display: none;">
+      <label for="name">Full Name</label>
+      <input type="text" id="name" />
+    </div>
+    <label for="email">Email</label>
+    <input type="email" id="email" required />
+    
+    <label for="password">Password</label>
+    <input type="password" id="password" required />
+    
+    <button type="submit" id="submitBtn">Login</button>
+
+    <p class="error" id="errorMsg"></p>
+    <p class="success" id="successMsg"></p>
+
+    <div class="switch">
+      <span id="switchText">Don't have an account?</span>
+      <a onclick="toggleForm()">Register</a>
+    </div>
+  </form>
+</main>
+<script>
+  let isLogin = true;
+
+  const users = [
+    { email: "user@example.com", password: "password123", name: "John Doe" },
+    { email: "admin@olivers.com", password: "adminpass", name: "Admin User" }
+  ];
+
+  const formTitle = document.getElementById('formTitle');
+  const nameGroup = document.getElementById('nameGroup');
+  const submitBtn = document.getElementById('submitBtn');
+  const switchText = document.getElementById('switchText');
+  const switchLink = document.querySelector('.switch a');
+  const errorMsg = document.getElementById('errorMsg');
+  const successMsg = document.getElementById('successMsg');
+  const authForm = document.getElementById('authForm');
+
+  function toggleForm() {
+    isLogin = !isLogin;
+    formTitle.textContent = isLogin ? "Login to Oliver's Market" : "Register at Oliver's Market";
+    submitBtn.textContent = isLogin ? "Login" : "Register";
+    switchText.textContent = isLogin ? "Don't have an account?" : "Already have an account?";
+    switchLink.textContent = isLogin ? "Register" : "Login";
+    nameGroup.style.display = isLogin ? "none" : "block";
+    errorMsg.textContent = "";
+    successMsg.textContent = "";
+  }
+
+  authForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    errorMsg.textContent = "";
+    successMsg.textContent = "";
+
+    if (!email || !password || (!isLogin && name === '')) {
+      errorMsg.textContent = "Please fill in all required fields.";
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errorMsg.textContent = "Please enter a valid email address.";
+      return;
+    }
+
+    if (password.length < 6) {
+      errorMsg.textContent = "Password must be at least 6 characters.";
+      return;
+    }
+
+    if (isLogin) {
+      const user = users.find(u => u.email === email);
+      if (!user) {
+        errorMsg.textContent = "Account not found. Please register.";
+        return;
+      }
+
+      if (user.password !== password) {
+        errorMsg.textContent = "Wrong password. Please try again.";
+        return;
+      }
+
+      successMsg.textContent = "Login successful! Redirecting...";
+      setTimeout(() => {
+        window.location.href = 'dashboard.html';
+      }, 1500);
+    } else {
+      const existing = users.find(u => u.email === email);
+      if (existing) {
+        errorMsg.textContent = "Email already registered. Try logging in.";
+        return;
+      }
+
+      users.push({ email, password, name });
+      successMsg.textContent = "Registration successful! Please login.";
+      authForm.reset();
+      toggleForm();
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Oliver's Market</title>
+  <a href=""></a>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      background-color: #f9f9f9;
+      color: #333;
+      position: relative;
+      min-height: 100vh;
+      padding-bottom: 60px; /* for footer */
+    }
+
+    header {
+      background-color: #070707;
+      color: white;
+      padding: 20px 0;
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
+      letter-spacing: 2px;
+      position: relative;
+    }
+
+    nav {
+      background-color: #2ecc71;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      padding: 15px 0;
+      font-weight: 600;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 1.1rem;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: #fc0909;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 15px;
+    }
+
+    .hero {
+      background:linear-gradient(to top, rgba(0,0,0,0.5)30%,rgba(0,0,0,0.5)30%), url(images.jpg);
+      height: 350px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-shadow: 2px 2px 8px #000;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 40px;
+    }
+
+    section {
+      margin-bottom: 40px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #27ae60;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(250px, 1fr));
+      gap: 25px;
+    }
+
+    .product-card {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 3px 7px rgba(0,0,0,0.1);
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transition: transform 0.2s ease;
+    }
+
+    .product-card:hover {
+      transform: scale(1.05);
+    }
+
+    .product-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    .product-name {
+      font-weight: 700;
+      margin-bottom: 8px;
+      font-size: 1.2rem;
+      color: #27ae60;
+    }
+
+    .product-price {
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+      color: #333;
+    }
+
+    .btn {
+      background-color: #27ae60;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background-color: #145214;
+    }
+
+    footer {
+      background-color: #27ae60;
+      color: white;
+      text-align: center;
+      padding: 15px 10px;
+      font-size: 0.9rem;
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+    }
+
+    /* Cart button */
+    #cart-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #27ae60;
+      color: white;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+      z-index: 1000;
+      transition: background-color 0.3s ease;
+    }
+
+    #cart-btn:hover {
+      background-color: #145214;
+    }
+
+    #cart-count {
+      background: #e74c3c;
+      color: white;
+      font-size: 0.9rem;
+      padding: 2px 7px;
+      border-radius: 12px;
+      font-weight: 700;
+      min-width: 20px;
+      text-align: center;
+    }
+
+    /* Cart modal */
+    #cart-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      width: 90%;
+      max-width: 400px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      z-index: 1500;
+      transition: transform 0.3s ease;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    #cart-modal.open {
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    #cart-modal header {
+      background: #27ae60;
+      color: white;
+      padding: 15px;
+      border-radius: 10px 10px 0 0;
+      font-weight: 700;
+      font-size: 1.3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #cart-modal header button {
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    #cart-items {
+      padding: 15px;
+      min-height: 100px;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 8px;
+    }
+
+    .cart-item-name {
+      font-weight: 600;
+      flex: 1;
+    }
+
+    .cart-item-qty {
+      margin: 0 10px;
+      font-weight: 600;
+    }
+
+    .cart-item-price {
+      font-weight: 600;
+      color: #27ae60;
+    }
+
+    .remove-btn {
+      background: #e74c3c;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      padding: 3px 7px;
+      cursor: pointer;
+      font-weight: 700;
+      margin-left: 10px;
+      font-size: 0.9rem;
+      transition: background-color 0.3s ease;
+    }
+
+    .remove-btn:hover {
+      background-color: #c0392b;
+    }
+
+    #cart-total {
+      text-align: right;
+      font-weight: 700;
+      font-size: 1.2rem;
+      padding: 10px 15px;
+      border-top: 1px solid #ddd;
+    }
+
+    /* Overlay */
+    #overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.4);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 1400;
+    }
+
+    #overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    @media(max-width: 600px){
+      .hero {
+        font-size: 1.8rem;
+        height: 250px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>Oliver's Market</header>
+
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#products">Products</a>
+    <a href="#about">About Us</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <button id="cart-btn">
+    🛒 Cart <span id="cart-count">0</span>
+  </button>
+
+  <div id="overlay"></div>
+
+  <div id="cart-modal">
+    <header>
+      Your Cart
+      <button id="close-cart">&times;</button>
+    </header>
+    <div id="cart-items">
+      <p>Your cart is empty.</p>
+    </div>
+    <div id="cart-total">Total: $0.00</div>
+  </div>
+
+  <main>
+    <section id="home" class="hero">
+      Fresh & Quality Goods Delivered To You
+    </section>
+
+    <section id="products">
+      <h2>Featured Products</h2>
+      <div class="products-grid">
+        <div class="product-card" data-name="Fresh Apples" data-price="2.99">
+          <img src="premium_photo-1674262321087-bfcd8135fdc5.jpg" alt="Fresh Apples" />
+          <div class="product-name">Fresh Apples</div>
+          <div class="product-price">$2.99 / lb</div>
+          <button class="btn add-to-cart-btn">Add to Cart</button>
+        </div>
+        <div class="product-card" data-name="Organic Bananas" data-price="1.50">
+          <img src="https://images.unsplash.com/photo-1506806732259-39c2d0268443?auto=format&fit=crop&w=600&q=80" alt="Organic Bananas" />
+          <div class="product-name">Organic Bananas</div>
+          <div class="product-price">$1.50 / lb</div>
+          <button class="btn add-to-cart-btn">Add to Cart</button>
+        </div>
+        <div class="product-card" data-name="Fresh Carrots" data-price="1.20">
+          <img src="f.jpg" alt="Fresh Carrots" />
+          <div class="product-name">Fresh Carrots</div>
+          <div class="product-price">$1.20 / lb</div>
+          <button class="btn add-to-cart-btn">Add to Cart</button>
+        </div>
+        <div class="product-card" data-name="Fresh Lettuce" data-price="1.00">
+          <img src="download.jpg" alt="Fresh Lettuce" />
+          <div class="product-name">Fresh Lettuce</div>
+          <div class="product-price">$1.00 / head</div>
+          <button class="btn add-to-cart-btn">Add to Cart</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="about">
+      <h2>About Us</h2>
+      <p style="max-width: 700px; margin: auto; font-size: 1.1rem; text-align: center;">
+        Oliver's Market is your local go-to source for fresh, organic, and quality produce. 
+        We believe in supporting local farmers and providing our customers with healthy, sustainable food choices.
+        Our mission is to make fresh food accessible and affordable for everyone.
+      </p>
+    </section>
+
+    <section id="contact">
+      <h2>Contact Us</h2>
+      <form style="max-width: 500px; margin: auto; display: flex; flex-direction: column; gap: 15px;">
+        <input type="text" placeholder="Your Name" required style="padding:10px; font-size:1rem; border:1px solid #ccc; border-radius:5px;" />
+        <input type="email" placeholder="Your Email" required style="padding:10px; font-size:1rem; border:1px solid #ccc; border-radius:5px;" />
+        <textarea placeholder="Your Message" required rows="5" style="padding:10px; font-size:1rem; border:1px solid #ccc; border-radius:5px;"></textarea>
+        <button type="submit" class="btn">Send Message</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    &copy; 2025 Oliver's Market. All rights reserved.
+  </footer>
+
+  <script>
+    // Cart data
+    const cart = [];
+
+    // Elements
+    const cartBtn = document.getElementById('cart-btn');
+    const cartCount = document.getElementById('cart-count');
+    const cartModal = document.getElementById('cart-modal');
+    const closeCartBtn = document.getElementById('close-cart');
+    const cartItemsContainer = document.getElementById('cart-items');
+    const cartTotal = document.getElementById('cart-total');
+    const overlay = document.getElementById('overlay');
+
+    // Helper to format price
+    function formatPrice(price) {
+      return '$' + price.toFixed(2);
+    }
+
+    // Render cart items
+    function renderCart() {
+      if (cart.length === 0) {
+        cartItemsContainer.innerHTML = '<p>Your cart is empty.</p>';
+        cartTotal.textContent = 'Total: $0.00';
+        cartCount.textContent = 0;
+        return;
+      }
+
+      let total = 0;
+      cartItemsContainer.innerHTML = '';
+      cart.forEach((item, index) => {
+        const itemTotal = item.price * item.qty;
+        total += itemTotal;
+
+        const div = document.createElement('div');
+        div.classList.add('cart-item');
+
+        div.innerHTML = `
+          <div class="cart-item-name">${item.name}</div>
+          <div>
+            Qty: <input type="number" min="1" value="${item.qty}" data-index="${index}" class="qty-input" style="width: 50px;"/>
+            <button class="remove-btn" data-index="${index}">X</button>
+          </div>
+          <div class="cart-item-price">${formatPrice(itemTotal)}</div>
+        `;
+
+        cartItemsContainer.appendChild(div);
+      });
+
+      cartTotal.textContent = 'Total: ' + formatPrice(total);
+      cartCount.textContent = cart.reduce((acc, item) => acc + item.qty, 0);
+
+      // Attach remove event listeners
+      document.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+          const index = e.target.dataset.index;
+          cart.splice(index, 1);
+          renderCart();
+        });
+      });
+
+      // Attach qty change listeners
+      document.querySelectorAll('.qty-input').forEach(input => {
+        input.addEventListener('change', e => {
+          let val = parseInt(e.target.value);
+          if (isNaN(val) || val < 1) val = 1;
+          const index = e.target.dataset.index;
+          cart[index].qty = val;
+          renderCart();
+        });
+      });
+    }
+
+    // Add product to cart
+    function addToCart(name, price) {
+      const existingItem = cart.find(item => item.name === name);
+      if (existingItem) {
+        existingItem.qty++;
+      } else {
+        cart.push({name, price, qty: 1});
+      }
+      renderCart();
+    }
+
+    // Open/close cart modal
+    function openCart() {
+      cartModal.classList.add('open');
+      overlay.classList.add('active');
+    }
+    function closeCart() {
+      cartModal.classList.remove('open');
+      overlay.classList.remove('active');
+    }
+
+    // Event listeners
+    cartBtn.addEventListener('click', openCart);
+    closeCartBtn.addEventListener('click', closeCart);
+    overlay.addEventListener('click', closeCart);
+
+    // Add to cart buttons
+    document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const card = e.target.closest('.product-card');
+        const name = card.dataset.name;
+        const price = parseFloat(card.dataset.price);
+        addToCart(name, price);
+      });
+    });
+
+    renderCart(); // initial render
+  </script>
+</body>
+</html>
